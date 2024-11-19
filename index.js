@@ -1,30 +1,33 @@
-import express from "express";      // Requisição do pacote do express
+//index.js
+import dotenv from "dotenv";
+import express from "express";
+import { selectUsuarios } from "./bd.js";
 
-const app = express();              // Instancia o Express
-const port = 3000;                  // Define a porta
+dotenv.config();
 
-app.get("/", (req, res) => {        // Cria a rota da raiz do projeto
-  console.log("Rota GET/ solicitada");
+const app = express(); // Instancia o Express
+const port = 3000; // Define a porta
+
+app.get("/", (req, res) => {
+  console.log("Rota / solicitada");
+  // Cria a rota da raiz do projeto
   res.json({
-    nome: "Arthur Não precisou fazer ENEM PRA SER ALGUÉM!!!",      // Substitua pelo seu nome
+    nome: "Arthur Porto", // Substitua pelo seu nome
   });
 });
 
-app.get("/enem", (req, res) => {        // Cria a rota da raiz do projeto
-  console.log("Rota GET/enem solicitada");
-  res.json({
-    nome: "VOCÊS TB NÃO PRECISAM DE ENEM PRA SER NINGUÉM!!!",      // Substitua pelo seu nome
-  });
+app.get("/usuarios", async (req, res) => {
+  try {
+    const usuarios = await selectUsuarios();
+    res.json(usuarios);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message || "Erro!" });
+  }
+
+  console.log("Rota GET/usuarios solicitada");
 });
 
-
-app.get("/enem/2025", (req, res) => {        // Cria a rota da raiz do projeto
-  console.log("Rota GET/enem solicitada");
-  res.json({
-    nome: "ESPERO QUE NÃO VEJA NINGUÉM AQUI... SÓ OS QUE JOGAM BEACH TENNIS... !",      // Substitua pelo seu nome
-  });
-});
-
-app.listen(port, () => {            // Um socket para "escutar" as requisições
+app.listen(port, () => {
+  // Um socket para "escutar" as requisições
   console.log(`Serviço escutando na porta:  ${port}`);
 });
